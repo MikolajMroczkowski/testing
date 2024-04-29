@@ -10,9 +10,9 @@ const prepare = async () => {
     const py = new PythonEnvironment('dse')
     const envWorking = py.createEnvironment()
     console.log(envWorking)
-    if (!envWorking) {
+    if (!envWorking.status) {
       console.log('Error creating environment')
-      throw new Error('Error creating environment')
+      return {status: false, message:envWorking.message };
     }
 
     const filePath = path.resolve(app.getAppPath(), 'resources', 'pythonTest.py');
@@ -31,10 +31,17 @@ const prepare = async () => {
       copyFileSync(ffmpeg.ffprobePath, py.isWindows() ? "ffprobe.exe" : "ffprobe");
     }
 
-    return true;
+    return {status: true, message: 'Environment prepared successfully'};
   } catch (error) {
     console.error('Wystąpił błąd podczas przygotowywania środowiska:', error);
-    return false;
+    let errForUser
+    if(error.message.includes(" Failed to establish a new connection")){
+      errForUser="Internet error!\nProbably no internet connection\nEnv can't be downloaded"
+    }
+    else{
+      errForUser=error.message
+    }
+    return {status: false, message:errForUser};
   }
 }
 
@@ -64,7 +71,7 @@ const checkEnv = ()=>{
 }
 const run=(input,out,model)=>{
     const py = new PythonEnvironment('dse')
-    const command = 'spleeter separate -o '+out+' -p '+model + " "+input
+    const command = `spleeter separate -o "${out}" -p ${model} "${input}"`
     console.log(command)
     const res = py.runCommand(command)
     console.log(res)

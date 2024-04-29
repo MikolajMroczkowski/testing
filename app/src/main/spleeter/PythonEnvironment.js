@@ -1,10 +1,11 @@
-const { execSync } = require('child_process');
+const { execSync,exec } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 
 class PythonEnvironment {
     constructor(venvPath) {
         this.venvPath = venvPath;
+        console.log(__dirname);
         //this.createEnvironment = this.createEnvironment.bind(this);
     }
 
@@ -14,13 +15,13 @@ class PythonEnvironment {
             const createCommand = `${pythonExecutable} -m venv ${this.venvPath}`;
             try {
                 execSync(createCommand);
-                return true
+                return {status: true, message: 'Environment created successfully'};
             }
             catch (e) {
-                return false
+                return {status: false, message: e.message};
             }
         } else {
-            return true
+            return {status: true, message: 'Environment already exists'};
         }
     }
 
@@ -30,8 +31,16 @@ class PythonEnvironment {
         const activateCommand = this.isWindows() ? activatePath : `source ${activatePath}`;
 
         const fullCommand = `${activateCommand} && ${command}`;
-        const result = execSync(fullCommand).toString();
-        return result;
+        //const result = execSync(fullCommand).toString();
+        return new Promise((resolve, reject) => {
+            exec(fullCommand, (error, stdout, stderr) => {
+                if (error) {
+                    reject(error);
+                    return;
+                }
+                resolve(stdout);
+            });
+        })
     }
 
     isWindows() {

@@ -31,8 +31,9 @@ const registerListeners = () => {
       if(!input || !output || !model) {
         resolve({status: false, message: 'input, output and model must be provided'})
       }
-      run(input,output,model)
-      resolve("OK")
+      run(input,output,model).then((data)=>{
+        resolve("OK")
+      })
     })
   })
   ipcMain.handle('select-output', (e,args) => {

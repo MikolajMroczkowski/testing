@@ -16,22 +16,30 @@ function App() {
   const [inputDir, setInputDir] = useState(null)
   const [outputDir, setOutputDir] = useState(null)
   const [model, setModel] = useState("spleeter:2stems")
+  const [outputName, setOutputName] = useState("")
+  const [inputName, setInputName] = useState("")
   useEffect(() => {
     window.electron.ipcRenderer.on("env", (e, env) => {
       setEnvStatus(env.status)
     })
-    //window.electron.ipcRenderer.send("check-env")
   }, [])
-  useEffect(() => {
-    //separate("C:\\Users\\miki\\WebstormProjects\\ytDown\\spleeter\\audio_example.mp3", "C:\\Users\\miki\\WebstormProjects\\ytDown\\spleeter\\test", "spleeter:2stems")
-  }, [envStatus])
+  useEffect(()=>{
+    const splitChar = window.electron.process.platform === "win32" ? "\\" : "/"
+    setInputName(inputDir?.split(splitChar).pop())
+    setOutputName(outputDir?.split(splitChar).pop())
+  },[inputDir,outputDir])
   const separate = (input, output, model) => {
     if (envStatus) {
       setSplitStatus(true)
       window.electron.ipcRenderer.invoke("split", {input: input, output: output, model: model}).then(() => {
         console.log("OK")
         setSplitStatus(false)
-        window.electron.ipcRenderer.send("run-sep",{dir:output})
+        const pathChar = window.electron.process.platform === "win32" ? "\\" : "/"
+        window.electron.ipcRenderer.send("run-sep",{dir:output+pathChar+inputName.split(".")[0]})
+        setInputDir("")
+        setInputName("")
+        setOutputDir("")
+        setOutputName("")
       })
     }
   }
@@ -51,9 +59,9 @@ function App() {
     console.log(model)
     if(inputDir && outputDir){
       //check for command line key chars
-      if(inputDir.includes(" ") || outputDir.includes(" ")||inputDir.includes("&") || outputDir.includes("&")){
-        alert("Invalid chars in name!, maybe '&' OR ' ' ")
-      }
+      // if(inputDir.includes(" ") || outputDir.includes(" ")||inputDir.includes("&") || outputDir.includes("&")){
+      //   alert("Invalid chars in name!, maybe '&' OR ' ' ")
+      // }
       separate(inputDir,outputDir,model)
     }
     else {
@@ -71,7 +79,10 @@ function App() {
           >
             <Grid container justifyContent={"center"} alignItems={"center"} flexDirection={"column"}>
               <Grid justifyContent={"center"} item><CircularProgress color="inherit"/></Grid>
-              <Grid justifyContent={"center"} item><Typography variant={"h4"}>Preparing...</Typography></Grid>
+              <Grid justifyContent={"center"} item><Typography variant={"h3"}>Preparing...</Typography></Grid>
+              <Grid justifyContent={"center"} item><Typography variant={"h6"}>Can take up to 30 minutes</Typography></Grid>
+              <Grid justifyContent={"center"} item><Typography variant={"subtitle1"}>Speed depends on your computer performance and network speed</Typography></Grid>
+              <Grid justifyContent={"center"} item><Typography variant={"subtitle1"}>Don't worry if app not responding its normal</Typography></Grid>
             </Grid>
           </Backdrop>
           <Backdrop
@@ -80,7 +91,11 @@ function App() {
           >
             <Grid container justifyContent={"center"} alignItems={"center"} flexDirection={"column"}>
               <Grid justifyContent={"center"} item><CircularProgress color="inherit"/></Grid>
-              <Grid justifyContent={"center"} item><Typography variant={"h4"}>Separating...</Typography></Grid>
+              <Grid justifyContent={"center"} item><Typography variant={"h3"}>Separating...</Typography></Grid>
+              <Grid justifyContent={"center"} item><Typography variant={"h5"}>{inputName}</Typography></Grid>
+              <Grid justifyContent={"center"} item><Typography variant={"h6"}>Can take up to 10 minutes</Typography></Grid>
+              <Grid justifyContent={"center"} item><Typography variant={"subtitle1"}>Speed depends on your computer performance</Typography></Grid>
+              <Grid justifyContent={"center"} item><Typography variant={"subtitle1"}>Don't worry if app not responding its normal</Typography></Grid>
             </Grid>
           </Backdrop>
         </>
@@ -94,7 +109,7 @@ function App() {
                 }
               })
             }} variant={"contained"}>Select input</Button>
-            <Typography display={"inline"} variant={"subtitle1"} paddingX={"10px"}>{inputDir||"NO SELECTED"}</Typography>
+            <Typography display={"inline"} variant={"subtitle1"} paddingX={"10px"}>{inputName||"NO SELECTED"}</Typography>
 
           </Grid>
           <Grid item flexDirection={"row"}>
@@ -106,7 +121,7 @@ function App() {
                 }
               })
             }} variant={"contained"}>Select Output</Button>
-            <Typography display={"inline"} variant={"subtitle1"}  paddingX={"10px"}>{outputDir || "NO SELECTED"}</Typography>
+            <Typography display={"inline"} variant={"subtitle1"}  paddingX={"10px"}>{outputName || "NO SELECTED"}</Typography>
 
           </Grid>
           <Grid item>

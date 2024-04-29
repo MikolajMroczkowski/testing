@@ -80,7 +80,7 @@ const prepareEnv =  async (mainWindow) => {
     const re = dialog.showMessageBoxSync({
       type: 'warning',
       title: 'Environment Warning',
-      message: env.message + "\nDo you want to prepare the environment?\nIf no app will exit.",
+      message: env.message + "\nDo you want to prepare the environment?\nIf no app will exit.\nDon't worry it runs once",
       buttons: ['Prepare', 'Cancel']
 
     })
@@ -90,12 +90,23 @@ const prepareEnv =  async (mainWindow) => {
         title: 'Preparing Environment',
         message: 'This may take a while\nUp to 30 minutes',
       })
-      await prepare()
-      dialog.showMessageBoxSync({
-        type: 'info',
-        title: 'Environment Prepared',
-        message: 'Environment has been prepared successfully',
-      })
+      const res = await prepare()
+      if (!res.status) {
+        dialog.showMessageBoxSync({
+          type: 'error',
+          title: 'Environment Error',
+          message: res.message,
+        })
+        app.quit()
+        return
+      }
+      else{
+        dialog.showMessageBoxSync({
+          type: 'info',
+          title: 'Environment Prepared',
+          message: 'Environment has been prepared successfully',
+        })
+      }
     } else {
       app.quit()
     }
