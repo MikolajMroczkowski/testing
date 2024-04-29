@@ -1,5 +1,5 @@
 appId: com.electron.app
-productName: app
+productName: spleeter-UI
 directories:
   buildResources: build
 files:
@@ -38,5 +38,8 @@ appImage:
   artifactName: ${name}-${version}.${ext}
 npmRebuild: false
 publish:
-  provider: generic
-  url: https://example.com/auto-updates
+  - provider: github
+    vPrefixedTagName: true
+    owner: e-buda
+    repo: spleeter-UI
+    releaseType: draft
