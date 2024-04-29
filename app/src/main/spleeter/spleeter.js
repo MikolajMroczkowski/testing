@@ -19,7 +19,7 @@ const prepare = async () => {
     const filePath = path.resolve(app.getAppPath(), 'resources', 'pythonTest.py');
     copyFileSync(filePath, app.getPath('userData') + '/pythonTest.py');
     const scriptPath = app.getPath('userData') + '/pythonTest.py'
-    const res = await py.runCommand('python ' + `"scriptPath"`);
+    const res = await py.runCommand('python ' + `"${scriptPath}"`);
     console.log(res);
     const res1 = await py.runCommand('pip list');
     console.log(res1);
