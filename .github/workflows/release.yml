@@ -11,6 +11,12 @@ jobs:
         os: [macos-latest, ubuntu-latest, windows-latest]
 
     steps:
+      - name: Generate a token
+        id: generate-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
       - name: Check out Git repository
         uses: actions/checkout@v1
 
@@ -24,7 +30,7 @@ jobs:
         with:
           # GitHub token, automatically provided to the action
           # (No need to define this secret in the repo settings)
-          github_token: ${{ secrets.github_token }}
+          github_token: ${{ secrets.to_relese }}
 
           # If the commit is tagged with a version (e.g. "v1.0.0"),
           # release the app after building
