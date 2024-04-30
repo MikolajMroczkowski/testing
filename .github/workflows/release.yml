@@ -37,6 +37,3 @@ jobs:
                   # Skip buiding the application
                   # (Optional)
                   skip_build: false
-
-              # Specify the working directory to be /app
-              working-directory: /app
