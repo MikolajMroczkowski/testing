@@ -47,8 +47,8 @@ function App() {
     palette: {
       mode: 'dark',
       primary: {
-        main: '#90caf9',
-      },
+        main: '#01bd8b',
+      }
     },
   });
   const modelChange = (e)=>{
