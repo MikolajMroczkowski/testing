@@ -1,6 +1,6 @@
 {
   "name": "app",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Deezer spleeter UI",
   "main": "./out/main/index.js",
   "author": "e-buda.eu",
