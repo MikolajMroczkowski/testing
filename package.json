@@ -3,7 +3,7 @@
   "version": "1.0.2",
   "description": "Deezer spleeter UI",
   "main": "./out/main/index.js",
-  "author": "example.com",
+  "author": "e-buda.eu",
   "homepage": "https://electron-vite.org",
   "scripts": {
     "format": "prettier --write .",
