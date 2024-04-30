@@ -11,12 +11,6 @@ files:
 asarUnpack:
   - resources/**
 win:
-  publish:
-    - provider: github
-      vPrefixedTagName: true
-      owner: e-buda
-      repo: spleeter-UI
-      releaseType: draft
   executableName: app
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
@@ -43,3 +37,7 @@ linux:
 appImage:
   artifactName: ${name}-${version}.${ext}
 npmRebuild: false
+publish:
+    - provider: github
+      owner: e-buda
+      repo: spleeter-UI
